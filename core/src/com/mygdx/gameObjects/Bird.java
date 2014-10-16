@@ -22,7 +22,7 @@ public class Bird {
 	}
 	
 	public void onClick(){
-		velocity.y = -55;
+		velocity.y = -20;
 	}
 	
 	public void update(float delta){

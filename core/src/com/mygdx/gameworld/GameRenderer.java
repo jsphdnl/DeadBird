@@ -10,6 +10,10 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.mygdx.GmHelpers.AssetLoader;
 import com.mygdx.gameObjects.Bird;
+import com.mygdx.gameObjects.Grass;
+import com.mygdx.gameObjects.Pipe;
+import com.mygdx.gameObjects.ScrollHandle;
+import com.mygdx.gameObjects.Scrollable;
 
 
 public class GameRenderer {
@@ -31,6 +35,9 @@ public class GameRenderer {
 	private Animation birdAnimation;
 	private TextureRegion birdUp, birdMid, birdDown;
 	private TextureRegion skullUp,skullDown, bar;
+	private ScrollHandle scroller;
+	private Grass frontGrass,backGrass;
+	private Pipe pipe1,pipe2,pipe3;
 	
 	
 	/*
@@ -54,6 +61,12 @@ public class GameRenderer {
 		skullUp = AssetLoader.skullUp;
 		skullDown = AssetLoader.skullDown;
 		bar = AssetLoader.bar;
+        scroller = myWorld.getScroller();
+        frontGrass = scroller.getFrontGrass();
+        backGrass = scroller.getBackGrass();
+        pipe1 = scroller.getPipe1();
+        pipe2 = scroller.getPipe2();
+        pipe3 = scroller.getPipe3(); 
 	}
 	
 	
@@ -74,6 +87,54 @@ public class GameRenderer {
 		initGameObjects();
 		initGameAssets();
 	}
+	
+	   private void drawGrass() {
+	        // Draw the grass
+	        batcher.draw(grass, frontGrass.getX(), frontGrass.getY(),
+	                frontGrass.getWidth(), frontGrass.getHeight());
+	        batcher.draw(grass, backGrass.getX(), backGrass.getY(),
+	                backGrass.getWidth(), backGrass.getHeight());
+	    }
+
+	    private void drawSkulls() {
+	        // Temporary code! Sorry about the mess :)
+	        // We will fix this when we finish the Pipe class.
+
+	        batcher.draw(skullUp, pipe1.getX() - 1,
+	                pipe1.getY() + pipe1.getHeight() - 14, 24, 14);
+	        batcher.draw(skullDown, pipe1.getX() - 1,
+	                pipe1.getY() + pipe1.getHeight() + 45, 24, 14);
+
+	        batcher.draw(skullUp, pipe2.getX() - 1,
+	                pipe2.getY() + pipe2.getHeight() - 14, 24, 14);
+	        batcher.draw(skullDown, pipe2.getX() - 1,
+	                pipe2.getY() + pipe2.getHeight() + 45, 24, 14);
+
+	        batcher.draw(skullUp, pipe3.getX() - 1,
+	                pipe3.getY() + pipe3.getHeight() - 14, 24, 14);
+	        batcher.draw(skullDown, pipe3.getX() - 1,
+	                pipe3.getY() + pipe3.getHeight() + 45, 24, 14);
+	    }
+
+	    private void drawPipes() {
+	        // Temporary code! Sorry about the mess :)
+	        // We will fix this when we finish the Pipe class.
+	        batcher.draw(bar, pipe1.getX(), pipe1.getY(), pipe1.getWidth(),
+	                pipe1.getHeight());
+	        batcher.draw(bar, pipe1.getX(), pipe1.getY() + pipe1.getHeight() + 45,
+	                pipe1.getWidth(), midPoint + 66 - (pipe1.getHeight() + 45));
+
+	        batcher.draw(bar, pipe2.getX(), pipe2.getY(), pipe2.getWidth(),
+	                pipe2.getHeight());
+	        batcher.draw(bar, pipe2.getX(), pipe2.getY() + pipe2.getHeight() + 45,
+	                pipe2.getWidth(), midPoint + 66 - (pipe2.getHeight() + 45));
+
+	        batcher.draw(bar, pipe3.getX(), pipe3.getY(), pipe3.getWidth(),
+	                pipe3.getHeight());
+	        batcher.draw(bar, pipe3.getX(), pipe3.getY() + pipe3.getHeight() + 45,
+	                pipe3.getWidth(), midPoint + 66 - (pipe3.getHeight() + 45));
+	    }
+	
 	
 	public void render(float runTime) {
 		Gdx.app.log("GameWorld","render");
@@ -110,7 +171,17 @@ public class GameRenderer {
         batcher.disableBlending();
         batcher.draw(AssetLoader.bg, 0, midPoint+23, 136, 43);
         
+       // batcher.enableBlending();
+        
+        // 1. Draw Grass
+        drawGrass();
+
+        // 2. Draw Pipes
+        drawPipes();
         batcher.enableBlending();
+
+        // 3. Draw Skulls (requires transparency)
+        drawSkulls();
         
         if (bird.shouldntFlap()){
         	batcher.draw(birdMid, bird.getX(),bird.getY(),bird.getWidth() / 2.0f, 
